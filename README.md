@@ -10,7 +10,7 @@ Go to [Search in Popup](https://addons.mozilla.org/en-US/firefox/addon/search-in
 After installing the extension, you can watch a tutorial to click the app icon in the tool bar.
 
 # License
-This project is licensed under Mozilla Public License Version 2.0 - see the LICENSE.txt file for details.
+This project is licensed under Mozilla Public License Version 2.0 - see the [LICENSE.txt](LICENSE.txt) file for details.
 
 # Cooperators
 Illustration: miya

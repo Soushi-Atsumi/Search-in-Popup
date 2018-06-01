@@ -9,14 +9,16 @@
  * This Source Code Form is "Incompatible With Secondary Licenses", as
  * defined by the Mozilla Public License, v. 2.0.
  */
+'use strict';
 
-browser.browserAction.getTitle({}).then((toggleTitle) => {
-    if (toggleTitle != '') {
-        window.location = toggleTitle;
-    } else {
-        browser.tabs.create({
-            url: browser.i18n.getMessage("url_index.html")
-        });
-        window.close();
-    }
+document.getElementsByTagName('html')[0].lang = browser.i18n.getUILanguage();
+document.title = browser.i18n.getMessage('popupHTMLTitle');
+
+browser.browserAction.getPopup({}).then((value) => {
+	if (value === browser.extension.getURL('/popup/popup.html')) {
+		browser.tabs.create({
+			url: '/index.html'
+		});
+		window.close();
+	}
 });

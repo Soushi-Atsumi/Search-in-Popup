@@ -9,81 +9,125 @@
  * This Source Code Form is "Incompatible With Secondary Licenses", as
  * defined by the Mozilla Public License, v. 2.0.
  */
+'use strict';
 
-browser.browserAction.setTitle({ title: '' });
+var xmlHttpRequest = new XMLHttpRequest();
+xmlHttpRequest.open('GET', browser.extension.getURL('/_values/SearchEngines.json'), false);
+xmlHttpRequest.send();
+const searchEngines = JSON.parse(xmlHttpRequest.responseText);
+xmlHttpRequest.open('GET', browser.extension.getURL('/_values/StorageKeys.json'), false);
+xmlHttpRequest.send();
+const storageKeys = JSON.parse(xmlHttpRequest.responseText);
 
-browser.contextMenus.create({
-    contexts: ['browser_action'],
-    icons: {
-        "1536": "icons/icon-1536.png"
-    },
-    id: 'tutorial',
-    title: browser.i18n.getMessage("tutorial")
+const tutorialMenuItemId = 'tutorial';
+const bingMenuItemId = 'bing';
+const duckduckgoMenuItemId = 'duckduckgo';
+const googleMenuItemId = 'google';
+const yahooMenuItemId = 'yahoo';
+const yahooJapanMenuItemId = 'yahooJapan';
+
+browser.storage.local.get(storageKeys.searchEngine).then((item) => {
+	if (Object.keys(item).length === 0) {
+		browser.storage.local.set({ searchEngine: searchEngines.ask.name });
+	}
 });
 
 browser.contextMenus.create({
-    command: '_execute_browser_action',
-    contexts: ['selection'],
-    id: 'bing',
-    title: 'Bing'
-});
-
-//DuckDuckGo does not show a scrollbar correctly
-browser.contextMenus.create({
-    command: '_execute_browser_action',
-    contexts: ['selection'],
-    id: 'duckduckgo',
-    title: 'DuckDuckGo'
-});
-
-browser.contextMenus.create({
-    command: '_execute_browser_action',
-    contexts: ['selection'],
-    id: 'google',
-    title: 'Google'
-});
-
-browser.contextMenus.create({
-    command: '_execute_browser_action',
-    contexts: ['selection'],
-    id: 'yahoo',
-    title: 'Yahoo!'
-});
-
-browser.contextMenus.create({
-    command: '_execute_browser_action',
-    contexts: ['selection'],
-    id: 'yahoo-japan',
-    title: 'Yahoo Japan'
+	contexts: ['browser_action'],
+	icons: {
+		"1536": "icons/icon-1536.png"
+	},
+	id: tutorialMenuItemId,
+	title: browser.i18n.getMessage("tutorial")
 });
 
 browser.contextMenus.onClicked.addListener((info, tab) => {
-    if (info.menuItemId === 'tutorial') {
-        browser.tabs.create({
-            url: browser.i18n.getMessage("url_index.html")
-        });
-    } else {
-        var searchEngine = '';
-        switch (info.menuItemId) {
-            case 'bing':
-                searchEngine = 'https://www.bing.com/search?q=';
-                break;
-            case 'duckduckgo':
-                searchEngine = 'https://duckduckgo.com/?q=';
-                break;
-            case 'google':
-                searchEngine = 'https://www.google.com/search?q=';
-                break;
-            case 'yahoo':
-                searchEngine = 'https://search.yahoo.com/search?p=';
-                break;
-            case 'yahoo-japan':
-                searchEngine = 'https://search.yahoo.co.jp/search?p=';
-                break;
-        }
+	let searchEngine = '';
 
-        browser.browserAction.setTitle({
-            title: `${searchEngine}${info.selectionText.trim()}`
-        });
-    }
+	switch (info.menuItemId) {
+		case tutorialMenuItemId:
+			browser.tabs.create({
+				url: '/index.html'
+			});
+			return;
+		case bingMenuItemId:
+			searchEngine = searchEngines.bing.url;
+			break;
+		case duckduckgoMenuItemId:
+			searchEngine = searchEngines.duckduckgo.url;
+			break;
+		case googleMenuItemId:
+			searchEngine = searchEngines.google.url;
+			break;
+		case yahooMenuItemId:
+			searchEngine = searchEngines.yahoo.url;
+			break;
+		case yahooJapanMenuItemId:
+			searchEngine = searchEngines.yahooJapan.url;
+			break;
+	}
+
+	browser.browserAction.setPopup({
+		popup: `${searchEngine}${info.selectionText.trim()}`
+	});
+	browser.browserAction.openPopup();
 });
+
+browser.contextMenus.onShown.addListener(function (info, tab) {
+	browser.contextMenus.removeAll();
+	browser.storage.local.get(storageKeys.searchEngine).then((item) => {
+		createContextMenus(item[storageKeys.searchEngine]);
+		browser.contextMenus.refresh();
+	});
+});
+
+function createContextMenus(searchEngine) {
+	browser.contextMenus.create({
+		contexts: ['browser_action'],
+		icons: {
+			"1536": "icons/icon-1536.png"
+		},
+		id: tutorialMenuItemId,
+		title: browser.i18n.getMessage("tutorial")
+	});
+
+	if (searchEngine === searchEngines.ask.name || searchEngine === searchEngines.bing.name) {
+		browser.contextMenus.create({
+			contexts: ['selection'],
+			id: bingMenuItemId,
+			title: browser.i18n.getMessage("searchInBing")
+		});
+	}
+
+	if (searchEngine === searchEngines.ask.name || searchEngine === searchEngines.duckduckgo.name) {
+		browser.contextMenus.create({
+			contexts: ['selection'],
+			id: duckduckgoMenuItemId,
+			title: browser.i18n.getMessage("searchInDuckDuckgo")
+		});
+	}
+
+	if (searchEngine === searchEngines.ask.name || searchEngine === searchEngines.google.name) {
+		browser.contextMenus.create({
+			contexts: ['selection'],
+			id: googleMenuItemId,
+			title: browser.i18n.getMessage("searchInGoogle")
+		});
+	}
+
+	if (searchEngine === searchEngines.ask.name || searchEngine === searchEngines.yahoo.name) {
+		browser.contextMenus.create({
+			contexts: ['selection'],
+			id: yahooMenuItemId,
+			title: browser.i18n.getMessage("searchInYahoo!")
+		});
+	}
+
+	if (searchEngine === searchEngines.ask.name || searchEngine === searchEngines.yahooJapan.name) {
+		browser.contextMenus.create({
+			contexts: ['selection'],
+			id: yahooJapanMenuItemId,
+			title: browser.i18n.getMessage("searchInYahooJapan")
+		});
+	}
+}
