@@ -1,6 +1,22 @@
 ﻿{
+	"add": {
+		"message": "追加"
+	},
+
+	"additionalSearchEngines": {
+		"message": "追加の検索エンジン"
+	},
+
+	"additionalSearchEngineCaution": {
+		"message": "検索エンジンは https をサポートしていなければなりません。"
+	},
+
 	"ask": {
 		"message": "尋ねる"
+	},
+
+	"alwaysUseAdditionalSearchEngine": {
+		"message": "常に追加の検索エンジンを使用する"
 	},
 
 	"alwaysUseBing": {
@@ -23,6 +39,18 @@
 		"message": "常にYahoo Japanを使用する"
 	},
 
+	"behaviorOfPageAction": {
+		"message": "アイコンの動作"
+	},
+
+	"delete": {
+		"message": "削除"
+	},
+
+	"doYouReallyWantToDelete": {
+		"message": "本当に削除しますか？"
+	},
+
 	"extensionDescription": {
 		"message": "ポップアップの中で検索を行います。",
 		"description": "拡張機能説明。"
@@ -31,6 +59,10 @@
 	"extensionName": {
 		"message": "ポップアップで検索",
 		"description": "拡張機能名。"
+	},
+
+	"goBackToHome": {
+		"message": "最初に戻る（検索エンジンに依存）"
 	},
 
 	"iconImageAlt": {
@@ -58,6 +90,16 @@
 		"description": "index.htmlの3番目の見出し。"
 	},
 
+	"indexHTMLHeading4": {
+		"message": "4.ショートカットキーで検索もできる（既定はCtrl+Alt+S）",
+		"description": "index.htmlの4番目の見出し。"
+	},
+
+	"indexHTMLInformation": {
+		"message": "拡張機能の管理（about:addons）で検索エンジンの編集ができます。ショートカットキーの編集をしたい場合は以下のリンクを参考にしてください。既定は「Ctrl+Alt+S」です。",
+		"description": "この拡張機能の情報。"
+	},
+
 	"indexHTMLTitle": {
 		"message": "使い方",
 		"description": "index.htmlの題名。"
@@ -68,38 +110,51 @@
 		"description": "使い方の動画のURL。"
 	},
 
+	"main": {
+		"message": "主要"
+	},
+
+	"nameOfSearchEngine": {
+		"message": "検索エンジンの名前"
+	},
+
 	"optionsHTMLTitle": {
 		"message": "設定",
 		"description": "options.htmlの題名。"
 	},
 
-	"popupHTMLTitle": {
-		"message": "ポップアップで検索",
-		"description": "popup.htmlの題名。"
+	"permissionErrorTabs": {
+		"message": "追加の許可設定が必要です。",
+		"description": "tabs権限が許可されていない時に表示するページの題名。"
+	},
+
+	"permissionErrorTabsDescription": {
+		"message": "ショートカットキーを使った検索には権限が必要です。拡張機能の管理（about:addons）でこのアドオンの許可設定を開いて許可してください。この権限は選択した文字を検索するためだけに使用されます。",
+		"description": "tabs権限が許可されていない時に表示するページの説明。"
+	},
+
+	"queryOfSearchEngine": {
+		"message": "検索エンジンのクエリ"
+	},
+
+	"reload": {
+		"message": "更新"
 	},
 
 	"searchEngines": {
 		"message": "検索エンジン"
 	},
 
-	"searchInBing": {
-		"message": "Bingで検索"
+	"searchEngineWhichHasBeenAdded": {
+		"message": "追加した検索エンジン"
 	},
 
-	"searchInDuckDuckgo": {
-		"message": "DuckDuckgoで検索"
+	"searchEngineWhichIsWantedToBeAdded": {
+		"message": "追加したい検索エンジン"
 	},
 
-	"searchInGoogle": {
-		"message": "Googleで検索"
-	},
-
-	"searchInYahoo!": {
-		"message": "Yahoo!で検索"
-	},
-
-	"searchInYahooJapan": {
-		"message": "Yahoo Japanで検索"
+	"thisSearchEngineHasAlreadyBeenAdded": {
+		"message": "この検索エンジンは既に追加されています。"
 	},
 
 	"tutorial": {
@@ -110,6 +165,10 @@
 	"tutorialTitle": {
 		"message": "ポップアップで検索 - 使い方",
 		"description": "使い方の題名。"
+	},
+
+	"urlOfSearchEngine": {
+		"message": "検索エンジンのURL"
 	},
 
 	"watchTheVideo": {

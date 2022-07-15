@@ -1,11 +1,80 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27428.2037
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32602.291
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9E79E1C8-08B5-4A38-A7AF-D4698E944682}"
+	ProjectSection(SolutionItems) = preProject
+		index.css = index.css
+		index.html = index.html
+		index.js = index.js
+		LICENSE.txt = LICENSE.txt
+		manifest.json = manifest.json
+		README.md = README.md
+		README_ja.md = README_ja.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_locales", "_locales", "{9D0E1D9C-BAA6-4BF2-9F52-22C380AABE80}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_values", "_values", "{CB6505BF-3817-4814-8F06-F6E114190BFF}"
+	ProjectSection(SolutionItems) = preProject
+		_values\PageActions.json = _values\PageActions.json
+		_values\SearchEngines.json = _values\SearchEngines.json
+		_values\StorageKeys.json = _values\StorageKeys.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "background", "background", "{6B02B74A-B5D4-444F-BA16-B24B8B018206}"
+	ProjectSection(SolutionItems) = preProject
+		background\background.js = background\background.js
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "icons", "icons", "{2D3EA9AB-74EB-469E-9966-5FE8494C1748}"
+	ProjectSection(SolutionItems) = preProject
+		icons\icon-1536.png = icons\icon-1536.png
+		icons\icon-192.png = icons\icon-192.png
+		icons\icon-24.png = icons\icon-24.png
+		icons\icon-384.png = icons\icon-384.png
+		icons\icon-48.png = icons\icon-48.png
+		icons\icon-768.png = icons\icon-768.png
+		icons\icon-96.png = icons\icon-96.png
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "options", "options", "{B9E07853-1A04-4D8F-AD36-D081CFF1B5BC}"
+	ProjectSection(SolutionItems) = preProject
+		options\options.css = options\options.css
+		options\options.html = options\options.html
+		options\options.js = options\options.js
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "popup", "popup", "{C27C538C-A33B-43E1-BB7D-81C512D68622}"
+	ProjectSection(SolutionItems) = preProject
+		popup\popup_dummy.html = popup\popup_dummy.html
+		popup\popup_dummy.js = popup\popup_dummy.js
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "en", "en", "{A88EE819-8090-4105-A495-85AEBE679D00}"
+	ProjectSection(SolutionItems) = preProject
+		_locales\en\messages.json = _locales\en\messages.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ja", "ja", "{517FF70E-F9CD-4EF8-9385-B96B1586F192}"
+	ProjectSection(SolutionItems) = preProject
+		_locales\ja\messages.json = _locales\ja\messages.json
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9D0E1D9C-BAA6-4BF2-9F52-22C380AABE80} = {9E79E1C8-08B5-4A38-A7AF-D4698E944682}
+		{CB6505BF-3817-4814-8F06-F6E114190BFF} = {9E79E1C8-08B5-4A38-A7AF-D4698E944682}
+		{6B02B74A-B5D4-444F-BA16-B24B8B018206} = {9E79E1C8-08B5-4A38-A7AF-D4698E944682}
+		{2D3EA9AB-74EB-469E-9966-5FE8494C1748} = {9E79E1C8-08B5-4A38-A7AF-D4698E944682}
+		{B9E07853-1A04-4D8F-AD36-D081CFF1B5BC} = {9E79E1C8-08B5-4A38-A7AF-D4698E944682}
+		{C27C538C-A33B-43E1-BB7D-81C512D68622} = {9E79E1C8-08B5-4A38-A7AF-D4698E944682}
+		{A88EE819-8090-4105-A495-85AEBE679D00} = {9D0E1D9C-BAA6-4BF2-9F52-22C380AABE80}
+		{517FF70E-F9CD-4EF8-9385-B96B1586F192} = {9D0E1D9C-BAA6-4BF2-9F52-22C380AABE80}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3AFFFF3B-7FBA-45E8-9026-DABC5D1AE76C}

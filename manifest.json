@@ -1,7 +1,9 @@
-{
+﻿{
+	"$schema": "http://json.schemastore.org/webextension",
+
 	"applications": {
 		"gecko": {
-			"strict_min_version": "60.0"
+			"strict_min_version": "74.0"
 		}
 	},
 
@@ -19,7 +21,16 @@
 			"768": "icons/icon-768.png",
 			"1536": "icons/icon-1536.png"
 		},
-		"default_popup": "popup/popup.html"
+		"default_popup": "index.html"
+	},
+
+	"commands": {
+		"open_and_search": {
+			"suggested_key": {
+				"default": "Ctrl+Alt+P"
+			},
+			"description": "__MSG_extensionDescription__"
+		}
 	},
 
 	"default_locale": "en",
@@ -44,6 +55,8 @@
 
 	"name": "__MSG_extensionName__",
 
+	"optional_permissions": [ "*://*/*" ],
+
 	"options_ui": {
 		"page": "options/options.html",
 		"browser_style": true
@@ -51,5 +64,5 @@
 
 	"permissions": [ "contextMenus", "storage" ],
 
-	"version": "2.1"
+	"version": "3.0"
 }
