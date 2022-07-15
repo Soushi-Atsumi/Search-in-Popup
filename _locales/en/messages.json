@@ -1,6 +1,22 @@
-{
+﻿{
+	"add": {
+		"message": "Add"
+	},
+
+	"additionalSearchEngines": {
+		"message": "Additional Search Engines"
+	},
+
+	"additionalSearchEngineCaution": {
+		"message": "A Search Engine must support https."
+	},
+
 	"ask": {
 		"message": "Ask"
+	},
+
+	"alwaysUseAdditionalSearchEngine": {
+		"message": "Always use an additional Search Engine"
 	},
 
 	"alwaysUseBing": {
@@ -23,6 +39,18 @@
 		"message": "Always use Yahoo Japan"
 	},
 
+	"behaviorOfPageAction": {
+		"message": "Behavior of the icon"
+	},
+
+	"delete": {
+		"message": "Delete"
+	},
+
+	"doYouReallyWantToDelete": {
+		"message": "Do you really want to delete?"
+	},
+
 	"extensionDescription": {
 		"message": "Search text in the popup.",
 		"description": "Description of the extension."
@@ -31,6 +59,10 @@
 	"extensionName": {
 		"message": "Search in Popup",
 		"description": "Name of the extension."
+	},
+
+	"goBackToHome": {
+		"message": "Go back to home (Depending on Search Engines)"
 	},
 
 	"iconImageAlt": {
@@ -54,8 +86,18 @@
 	},
 
 	"indexHTMLHeading3": {
-		"message": "3.Choose a search engine what you want to use",
+		"message": "3.Choose a Search Engine what you want to use",
 		"description": "The third heading of index.html."
+	},
+
+	"indexHTMLHeading4": {
+		"message": "4.You can search with a shortcut key also (the default is Ctrl+Alt+S)",
+		"description": "The fourth heading of index.html."
+	},
+
+	"indexHTMLInformation": {
+		"message": "You can manage Search Engine in a manager of extensions (about:addons). If you want to edit the shortcut key, refer to the following site. The default is \"Ctrl+Alt+S\".",
+		"description": "Information of this extention."
 	},
 
 	"indexHTMLTitle": {
@@ -68,38 +110,51 @@
 		"description": "The url of tutorial video."
 	},
 
+	"main": {
+		"message": "Main"
+	},
+
+	"nameOfSearchEngine": {
+		"message": "Name of Search Engines"
+	},
+
 	"optionsHTMLTitle": {
 		"message": "Options",
 		"description": "The title of options.html."
 	},
 
-	"popupHTMLTitle": {
-		"message": "Search in Popup",
-		"description": "The title of popup.html"
+	"permissionErrorTabs": {
+		"message": "An additional permission is required.",
+		"description": "A title of a page which is displayed when a user have not allowed tabs permission."
+	},
+
+	"permissionErrorTabsDescription": {
+		"message": "Seaching with a shortcut key requires a permission. Open permissions of this extension in a manager of extensions (about:addons) and allow permissions. This permission is used to get a selected text for searching.",
+		"description": "Description of a page which is displayed when a user have not allowed tabs permission."
+	},
+
+	"queryOfSearchEngine": {
+		"message": "Query of Search Engine"
+	},
+
+	"reload": {
+		"message": "Reload"
 	},
 
 	"searchEngines": {
 		"message": "Search Engines"
 	},
 
-	"searchInBing": {
-		"message": "Search in Bing"
+	"searchEngineWhichHasBeenAdded": {
+		"message": "Search Engine which has been added"
 	},
 
-	"searchInDuckDuckgo": {
-		"message": "Search in DuckDuckgo"
+	"searchEngineWhichIsWantedToBeAdded": {
+		"message": "Search Engine which is wanted to be added"
 	},
 
-	"searchInGoogle": {
-		"message": "Search in Google"
-	},
-
-	"searchInYahoo!": {
-		"message": "Search in Yahoo!"
-	},
-
-	"searchInYahooJapan": {
-		"message": "Search in Yahoo Japan"
+	"thisSearchEngineHasAlreadyBeenAdded": {
+		"message": "This Search Engine has already been added."
 	},
 
 	"tutorial": {
@@ -110,6 +165,10 @@
 	"tutorialTitle": {
 		"message": "Search in Popup - Tutorial",
 		"description": "The title of the tutorial."
+	},
+
+	"urlOfSearchEngine": {
+		"message": "Url of Search Engine"
 	},
 
 	"watchTheVideo": {

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Search in Popup - More useful searching extension than Built-in features.
  * Copyright (c) 2018 Soushi Atsumi. All rights reserved.
  *
@@ -18,33 +18,10 @@ document.getElementById('icon').alt = browser.i18n.getMessage('iconImageAlt');
 document.getElementById('heading1').innerText = browser.i18n.getMessage('indexHTMLHeading1');
 document.getElementById('heading2').innerText = browser.i18n.getMessage('indexHTMLHeading2');
 document.getElementById('heading3').innerText = browser.i18n.getMessage('indexHTMLHeading3');
+document.getElementById('heading4').innerText = browser.i18n.getMessage('indexHTMLHeading4');
 
 var tutorialVideoLabel = document.getElementById('tutorialVideoDescriptionLabel');
-tutorialVideoLabel.innerText = browser.i18n.getMessage('watchTheVideo');
-var tutorialVideoDivision = document.getElementById('tutorialVideoDivision');
-var closeTutorialVideoButton = document.getElementById('closeTutorialVideoButton');
-var tutorialVideoIframe = document.getElementById('tutorialVideoIframe');
-
+tutorialVideoAnchor.innerText = browser.i18n.getMessage('watchTheVideo');
+tutorialVideoAnchor.href = browser.i18n.getMessage('indexHTMLTutorialVideo');
+document.getElementById('informationDivision').innerText = browser.i18n.getMessage('indexHTMLInformation');
 document.getElementById('cautionDivision').innerText = browser.i18n.getMessage('indexHTMLCaution');
-
-tutorialVideoDivision.addEventListener('click', () => {
-	tutorialVideoOnClose();
-});
-
-closeTutorialVideoButton.addEventListener('click', () => {
-	tutorialVideoOnClose();
-});
-
-tutorialVideoLabel.addEventListener('click', () => {
-	tutorialVideoOnShow();
-});
-
-function tutorialVideoOnShow() {
-	tutorialVideoDivision.style.display = 'block';
-	tutorialVideoIframe.src = browser.i18n.getMessage('indexHTMLTutorialVideo');
-}
-
-function tutorialVideoOnClose() {
-	tutorialVideoDivision.style.display = 'none';
-	tutorialVideoIframe.src = "";
-}

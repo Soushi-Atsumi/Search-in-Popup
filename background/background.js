@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Search in Popup - More useful searching extension than Built-in features.
  * Copyright (c) 2018 Soushi Atsumi. All rights reserved.
  *
@@ -11,82 +11,119 @@
  */
 'use strict';
 
-var xmlHttpRequest = new XMLHttpRequest();
-xmlHttpRequest.open('GET', browser.extension.getURL('/_values/SearchEngines.json'), false);
-xmlHttpRequest.send();
-const searchEngines = JSON.parse(xmlHttpRequest.responseText);
-xmlHttpRequest.open('GET', browser.extension.getURL('/_values/StorageKeys.json'), false);
-xmlHttpRequest.send();
-const storageKeys = JSON.parse(xmlHttpRequest.responseText);
+let pageActions;
+let searchEngines;
+let storageKeys;
+let pageActionOptions;
+let searchEngineOptions;
 
 const tutorialMenuItemId = 'tutorial';
 const bingMenuItemId = 'bing';
 const duckduckgoMenuItemId = 'duckduckgo';
 const googleMenuItemId = 'google';
+const mainAdditionalSearchEngineMenuItemId = 'mainAdditionalSearchEngine';
 const yahooMenuItemId = 'yahoo';
 const yahooJapanMenuItemId = 'yahooJapan';
 
-browser.storage.local.get(storageKeys.searchEngine).then((item) => {
-	if (Object.keys(item).length === 0) {
-		browser.storage.local.set({ searchEngine: searchEngines.ask.name });
-	}
-});
+const additionalSearchEngine = {
+	all: [],
+	get main() { return this.all.filter(e => e.isMain)[0]; }
+};
 
-browser.contextMenus.create({
-	contexts: ['browser_action'],
-	icons: {
-		"1536": "icons/icon-1536.png"
-	},
-	id: tutorialMenuItemId,
-	title: browser.i18n.getMessage("tutorial")
-});
+main();
 
-browser.contextMenus.onClicked.addListener((info, tab) => {
-	let searchEngine = '';
+async function main() {
+	await readKeys();
+	await readOptions();
 
-	switch (info.menuItemId) {
-		case tutorialMenuItemId:
-			browser.tabs.create({
-				url: '/index.html'
+	browser.runtime.onMessage.addListener((message, _, sendResponse) => readOptions());
+
+	browser.contextMenus.onClicked.addListener((info, tab) => {
+		let searchEngine = '';
+		let searchEngineQuery = '';
+		let selectionText = info.selectionText?.trim() ?? '';
+
+		switch (info.menuItemId) {
+			case tutorialMenuItemId:
+				searchEngine = browser.runtime.getURL('index.html');
+				selectionText = '';
+				break;
+			case bingMenuItemId:
+				searchEngine = searchEngines.bing.url;
+				searchEngineQuery = searchEngines.bing.query;
+				break;
+			case duckduckgoMenuItemId:
+				searchEngine = searchEngines.duckduckgo.url;
+				searchEngineQuery = searchEngines.duckduckgo.query;
+				break;
+			case googleMenuItemId:
+				searchEngine = searchEngines.google.url;
+				searchEngineQuery = searchEngines.google.query;
+				break;
+			case mainAdditionalSearchEngineMenuItemId:
+				searchEngine = additionalSearchEngine.main.url;
+				searchEngineQuery = additionalSearchEngine.main.query;
+				break;
+			case yahooMenuItemId:
+				searchEngine = searchEngines.yahoo.url;
+				searchEngineQuery = searchEngines.yahoo.query;
+				break;
+			case yahooJapanMenuItemId:
+				searchEngine = searchEngines.yahooJapan.url;
+				searchEngineQuery = searchEngines.yahooJapan.query;
+				break;
+			default:
+				searchEngine = additionalSearchEngine.all[info.menuItemId].url;
+				searchEngineQuery = additionalSearchEngine.all[info.menuItemId].query;
+		}
+
+		browser.browserAction.setPopup({ popup: `${searchEngine}${searchEngineQuery}${selectionText}` });
+		browser.browserAction.openPopup();
+		setHome();
+	});
+
+	browser.commands.onCommand.addListener(command => {
+		if (command === 'open_and_search') {
+			setPopupDummy();
+
+			let tabId = browser.tabs.query({ currentWindow: true, active: true }).id;
+			browser.tabs.executeScript(tabId, { code: 'window.getSelection().toString().trim();', }).then(text => {
+				let selectedText = text[0].trim();
+
+				if (selectedText.length !== 0) {
+					let searchEngine = '';
+					let searchEngineQuery = '';
+
+					if (searchEngineOptions[storageKeys.searchEngine] === undefined || searchEngineOptions[storageKeys.searchEngine] === searchEngines.ask.name) {
+						searchEngine = searchEngines.google.url;
+						searchEngineQuery = searchEngines.google.query;
+					} else if (searchEngineOptions[storageKeys.searchEngine] === searchEngines.additional.name) {
+						searchEngine = additionalSearchEngine.main.url;
+						searchEngineQuery = additionalSearchEngine.main.query;
+					} else {
+						const key = Object.keys(searchEngines).filter(key => searchEngines[key].name === searchEngineOptions[storageKeys.searchEngine]);
+						searchEngine = searchEngines[key].url;
+						searchEngineQuery = searchEngines[key].query;
+					}
+
+					browser.browserAction.setPopup({
+						popup: `${searchEngine}${searchEngineQuery}${selectedText}`
+					});
+				}
+			}, error => {
+				console.error(error);
+				browser.browserAction.setPopup({ popup: browser.runtime.getURL('error/permission_error.html') });
 			});
-			return;
-		case bingMenuItemId:
-			searchEngine = searchEngines.bing.url;
-			break;
-		case duckduckgoMenuItemId:
-			searchEngine = searchEngines.duckduckgo.url;
-			break;
-		case googleMenuItemId:
-			searchEngine = searchEngines.google.url;
-			break;
-		case yahooMenuItemId:
-			searchEngine = searchEngines.yahoo.url;
-			break;
-		case yahooJapanMenuItemId:
-			searchEngine = searchEngines.yahooJapan.url;
-			break;
-	}
 
-	browser.browserAction.setPopup({
-		popup: `${searchEngine}${info.selectionText.trim()}`
+			browser.browserAction.openPopup();
+		}
 	});
-	browser.browserAction.openPopup();
-});
-
-browser.contextMenus.onShown.addListener(function (info, tab) {
-	browser.contextMenus.removeAll();
-	browser.storage.local.get(storageKeys.searchEngine).then((item) => {
-		createContextMenus(item[storageKeys.searchEngine]);
-		browser.contextMenus.refresh();
-	});
-});
+}
 
 function createContextMenus(searchEngine) {
 	browser.contextMenus.create({
 		contexts: ['browser_action'],
-		icons: {
-			"1536": "icons/icon-1536.png"
-		},
+		icons: { "1536": "icons/icon-1536.png" },
 		id: tutorialMenuItemId,
 		title: browser.i18n.getMessage("tutorial")
 	});
@@ -94,40 +131,128 @@ function createContextMenus(searchEngine) {
 	if (searchEngine === searchEngines.ask.name || searchEngine === searchEngines.bing.name) {
 		browser.contextMenus.create({
 			contexts: ['selection'],
+			icons: { "16": `${searchEngines.bing.url}/favicon.ico` },
 			id: bingMenuItemId,
-			title: browser.i18n.getMessage("searchInBing")
+			title: searchEngines.bing.name
 		});
 	}
 
 	if (searchEngine === searchEngines.ask.name || searchEngine === searchEngines.duckduckgo.name) {
 		browser.contextMenus.create({
 			contexts: ['selection'],
+			icons: { "16": `${searchEngines.duckduckgo.url}/favicon.ico` },
 			id: duckduckgoMenuItemId,
-			title: browser.i18n.getMessage("searchInDuckDuckgo")
+			title: searchEngines.duckduckgo.name
 		});
 	}
 
 	if (searchEngine === searchEngines.ask.name || searchEngine === searchEngines.google.name) {
 		browser.contextMenus.create({
 			contexts: ['selection'],
+			icons: { "16": `${searchEngines.google.url}/favicon.ico` },
 			id: googleMenuItemId,
-			title: browser.i18n.getMessage("searchInGoogle")
+			title: searchEngines.google.name
 		});
 	}
 
 	if (searchEngine === searchEngines.ask.name || searchEngine === searchEngines.yahoo.name) {
 		browser.contextMenus.create({
 			contexts: ['selection'],
+			icons: { "16": `${searchEngines.yahoo.url}/favicon.ico` },
 			id: yahooMenuItemId,
-			title: browser.i18n.getMessage("searchInYahoo!")
+			title: searchEngines.yahoo.name
 		});
 	}
 
 	if (searchEngine === searchEngines.ask.name || searchEngine === searchEngines.yahooJapan.name) {
 		browser.contextMenus.create({
 			contexts: ['selection'],
+			icons: { "16": `${searchEngines.yahooJapan.url}/favicon.ico` },
 			id: yahooJapanMenuItemId,
-			title: browser.i18n.getMessage("searchInYahooJapan")
+			title: searchEngines.yahooJapan.name
 		});
 	}
+
+	if (searchEngine === searchEngines.ask.name) {
+		for (let i in additionalSearchEngine.all) {
+			browser.contextMenus.create({
+				contexts: ['selection'],
+				icons: { "16": `${new URL(additionalSearchEngine.all[i].url).origin}/favicon.ico` },
+				id: i,
+				title: additionalSearchEngine.all[i].name
+			});
+		}
+	}
+
+	if (searchEngine === searchEngines.additional.name) {
+		browser.contextMenus.create({
+			contexts: ['selection'],
+			icons: { "16": `${new URL(additionalSearchEngine.main.url).origin}/favicon.ico` },
+			id: mainAdditionalSearchEngineMenuItemId,
+			title: additionalSearchEngine.main.name
+		});
+	}
+
+	browser.contextMenus.refresh();
+}
+
+async function readKeys() {
+	return Promise.all([fetch(browser.runtime.getURL('/_values/PageActions.json')), fetch(browser.runtime.getURL('/_values/SearchEngines.json')), fetch(browser.runtime.getURL('/_values/StorageKeys.json'))]).then(values => {
+		return Promise.all(values.map(value => value.text()));
+	}).then(values => {
+		pageActions = JSON.parse(values[0]);
+		searchEngines = JSON.parse(values[1]);
+		storageKeys = JSON.parse(values[2]);
+	});
+}
+
+async function readOptions() {
+	searchEngineOptions = await browser.storage.local.get([storageKeys.additionalSearchEngine, storageKeys.searchEngine]);
+	pageActionOptions = await browser.storage.local.get([storageKeys.pageAction]);
+
+	if (Object.keys(searchEngineOptions).includes(storageKeys.additionalSearchEngine)) {
+		additionalSearchEngine.all = searchEngineOptions[storageKeys.additionalSearchEngine];
+	}
+
+	await browser.contextMenus.removeAll();
+	createContextMenus(searchEngineOptions[storageKeys.searchEngine] ?? searchEngines.ask.name);
+
+	return setHome();
+}
+
+async function setHome() {
+	if (pageActionOptions?.[storageKeys.pageAction] !== pageActions.goBackToHome) {
+		return;
+	}
+
+	let panelUrl;
+
+	switch (searchEngineOptions[storageKeys.searchEngine]) {
+		case searchEngines.additional.name:
+			panelUrl = additionalSearchEngine.main.url;
+			break;
+		case searchEngines.bing.name:
+			panelUrl = searchEngines.bing.url;
+			break;
+		case searchEngines.duckduckgo.name:
+			panelUrl = searchEngines.duckduckgo.url;
+			break;
+		case searchEngines.google.name:
+			panelUrl = searchEngines.google.url;
+			break;
+		case searchEngines.yahoo.name:
+			panelUrl = searchEngines.yahoo.url;
+			break;
+		case searchEngines.yahooJapan.name:
+			panelUrl = searchEngines.yahooJapan.url;
+			break;
+		default:
+			panelUrl = browser.runtime.getURL('index.html');
+	}
+
+	return browser.browserAction.setPopup({ popup: panelUrl });
+}
+
+async function setPopupDummy() {
+	return browser.browserAction.setPopup({ popup: browser.runtime.getURL('popup/popup_dummy.html') });
 }
