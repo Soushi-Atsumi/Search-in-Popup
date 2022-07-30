@@ -55,14 +55,12 @@
 
 	"name": "__MSG_extensionName__",
 
-	"optional_permissions": [ "*://*/*" ],
-
 	"options_ui": {
 		"page": "options/options.html",
 		"browser_style": true
 	},
 
-	"permissions": [ "contextMenus", "storage" ],
+	"permissions": [ "activeTab", "contextMenus", "storage" ],
 
-	"version": "3.0"
+	"version": "3.0.1"
 }
