@@ -110,9 +110,6 @@ async function main() {
 						popup: `${searchEngine}${searchEngineQuery}${selectedText}`
 					});
 				}
-			}, error => {
-				console.error(error);
-				browser.browserAction.setPopup({ popup: browser.runtime.getURL('error/permission_error.html') });
 			});
 
 			browser.browserAction.openPopup();
