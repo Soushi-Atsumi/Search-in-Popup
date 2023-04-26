@@ -12,7 +12,7 @@
 'use strict';
 
 setTimeout(() => {
-	browser.browserAction.getPopup({}).then(async (url) => {
+	browser.browserAction.getPopup({}).then(async url => {
 		const pageActions = JSON.parse(await (await fetch(browser.runtime.getURL('/_values/PageActions.json'))).text());
 		const searchEngines = JSON.parse(await (await fetch(browser.runtime.getURL('/_values/SearchEngines.json'))).text());
 		const storageKeys = JSON.parse(await (await fetch(browser.runtime.getURL('/_values/StorageKeys.json'))).text());
