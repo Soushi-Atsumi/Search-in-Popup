@@ -53,6 +53,10 @@
 		"message": "最初に戻る（検索エンジンに依存）"
 	},
 
+	"height": {
+		"message": "高さ"
+	},
+
 	"host": {
 		"message": "ホスト"
 	},
@@ -119,8 +123,20 @@
 		"description": "options.htmlの題名。"
 	},
 
+	"optionsPopupSizeHTMLCaution": {
+		"message": "これはポップアップのサイズを上書きし、サイドバーなどを含む全ての拡張機能のページに影響します。"
+	},
+
 	"optionsUserAgentHTMLCaution": {
-		"message": "これはユーザーエージェントを上書きし、全ての拡張機能のページに影響します。"
+		"message": "これはユーザーエージェントを上書きし、サイドバーなどを含む全ての拡張機能のページに影響します。"
+	},
+
+	"popupSize": {
+		"message": "ポップアップのサイズ"
+	},
+
+	"popupSizeDescription": {
+		"message": "有効にするとポップアップのサイズの固定を試みます。Googleの検索結果のような、正常に表示されないサイトで有用です。"
 	},
 
 	"query": {
@@ -174,5 +190,9 @@
 
 	"watchTheVideo": {
 		"message": "動画を観る"
+	},
+
+	"width": {
+		"message": "幅"
 	}
 }

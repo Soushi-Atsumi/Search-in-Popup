@@ -27,6 +27,8 @@ const yahooMenuItemId = 'yahoo';
 const yahooJapanMenuItemId = 'yahooJapan';
 const hostPermissions = { origins: ['*://*/*'] };
 let optionsUrl;
+let popupSizeContentScriptRegistration;
+let popupSizeContentScriptSync = Promise.resolve();
 
 const additionalSearchEngine = {
 	all: [],
@@ -43,6 +45,7 @@ async function main() {
 	browser.storage.local.onChanged.addListener(async _ => {
 		await readOptions();
 	});
+
 	browser.contextMenus.onClicked.addListener((info, _) => {
 		let searchEngine = '';
 		let searchEngineQuery = '';
@@ -88,7 +91,8 @@ async function main() {
 				shouldAdditionalSearchEngineUseExtendedQuery = additionalSearchEngine.all[info.menuItemId].isExtendedQuery ?? false;
 		}
 
-		const popupUrl = shouldAdditionalSearchEngineUseExtendedQuery ? `${searchEngine}${searchEngineQuery.replaceAll('{q}', selectionText)}` : `${searchEngine}${searchEngineQuery}${selectionText}`;
+		const encodedText = encodeURIComponent(selectionText);
+		const popupUrl = shouldAdditionalSearchEngineUseExtendedQuery ? `${searchEngine}${searchEngineQuery.replaceAll('{q}', encodedText)}` : `${searchEngine}${searchEngineQuery}${encodedText}`;
 		browser.browserAction.setPopup({ popup: popupUrl });
 		browser.browserAction.openPopup();
 		setHome();
@@ -119,7 +123,8 @@ async function main() {
 					searchEngineQuery = searchEngines[key].query;
 				}
 
-				const popupUrl = shouldAdditionalSearchEngineUseExtendedQuery ? `${searchEngine}${searchEngineQuery.replaceAll('{q}', selectedText)}` : `${searchEngine}${searchEngineQuery}${selectedText}`;
+				const encodedText = encodeURIComponent(selectedText);
+				const popupUrl = shouldAdditionalSearchEngineUseExtendedQuery ? `${searchEngine}${searchEngineQuery.replaceAll('{q}', encodedText)}` : `${searchEngine}${searchEngineQuery}${encodedText}`;
 				browser.browserAction.setPopup({ popup: popupUrl });
 			}
 		}
@@ -148,14 +153,27 @@ async function main() {
 		if (hostPermissions.origins.every(origin => permissions.origins.includes(origin))) {
 			browser.webRequest.onBeforeSendHeaders.addListener(onBeforeSendHeadersListener, filter, extraInfoSpec);
 		}
+		togglePopupSizeContentScript();
 	};
 	const permissionsOnRemovedListener = permissions => {
 		if (hostPermissions.origins.every(origin => permissions.origins.includes(origin))) {
 			browser.webRequest.onBeforeSendHeaders.removeListener(onBeforeSendHeadersListener);
 		}
+		togglePopupSizeContentScript();
 	};
 	browser.permissions.onAdded.addListener(permissionsOnAddedListener);
 	browser.permissions.onRemoved.addListener(permissionsOnRemovedListener);
+
+	browser.runtime.onMessage.addListener(async (message, sender) => {
+		const shouldFix = currentSettings[storageKeys.isPopupSizeFixEnabled] === true && sender.tab === undefined;
+		const popupSize = currentSettings[storageKeys.popupSize] ?? {};
+
+		return {
+			shouldFix,
+			height: popupSize.height ?? '600px',
+			width: popupSize.width ?? '800px'
+		};
+	});
 
 	currentSettings = await browser.storage.local.get();
 
@@ -253,6 +271,7 @@ async function createContextMenus() {
 
 async function readOptions() {
 	currentSettings = await browser.storage.local.get();
+	togglePopupSizeContentScript();
 
 	if (Object.keys(currentSettings).includes(storageKeys.additionalSearchEngine)) {
 		additionalSearchEngine.all = currentSettings[storageKeys.additionalSearchEngine];
@@ -301,6 +320,24 @@ async function setHome() {
 	return browser.browserAction.setPopup({ popup: popupUrl });
 }
 
-async function setPopupDummy() {
-	return browser.browserAction.setPopup({ popup: browser.runtime.getURL('popup/popup_dummy.html') });
+function setPopupDummy() {
+	browser.browserAction.setPopup({ popup: browser.runtime.getURL('popup/popup_dummy.html') });
+}
+
+function togglePopupSizeContentScript() {
+	popupSizeContentScriptSync = popupSizeContentScriptSync.then(async () => {
+		const shouldRegister = currentSettings[storageKeys.isPopupSizeFixEnabled] === true && await browser.permissions.contains(hostPermissions);
+
+		if (shouldRegister && popupSizeContentScriptRegistration === undefined) {
+			popupSizeContentScriptRegistration = await browser.contentScripts.register({
+				matches: hostPermissions.origins,
+				js: [{ file: '/content/content.js' }],
+				runAt: 'document_end',
+				allFrames: false
+			});
+		} else if (!shouldRegister && popupSizeContentScriptRegistration !== undefined) {
+			popupSizeContentScriptRegistration.unregister();
+			popupSizeContentScriptRegistration = undefined;
+		}
+	});
 }

@@ -53,6 +53,10 @@
 		"message": "Go back to home (Depending on Search Engines)"
 	},
 
+	"height": {
+		"message": "Height"
+	},
+
 	"host": {
 		"message": "host"
 	},
@@ -119,8 +123,20 @@
 		"description": "The title of options.html."
 	},
 
+	"optionsPopupSizeHTMLCaution": {
+		"message": "This overwrites the size of the popup and affects all extension pages, including sidebars."
+	},
+
 	"optionsUserAgentHTMLCaution": {
-		"message": "This overwrites the user agent and it effects a page of all extensions."
+		"message": "This overwrites the user agent and affects all extension pages, including sidebars."
+	},
+
+	"popupSize": {
+		"message": "Popup size"
+	},
+
+	"popupSizeDescription": {
+		"message": "Attempts to fix the popup size if enabled. Useful for sites that do not display properly, such as Google search results."
 	},
 
 	"query": {
@@ -174,5 +190,9 @@
 
 	"watchTheVideo": {
 		"message": "Watch the Video"
+	},
+
+	"width": {
+		"message": "Width"
 	}
 }

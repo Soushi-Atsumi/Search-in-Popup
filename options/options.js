@@ -55,6 +55,9 @@ const searchEngineWhichIsWantedToBeAddedMainCheckbox = document.getElementById('
 const addSearchEngineButton = document.getElementById('addSearchEngineButton');
 const searchEngineWhichHasBeenAddedTableBody = document.getElementById('searchEngineWhichHasBeenAddedTableBody');
 const additionalPermissionsHostCheckbox = document.getElementById('additionalPermissionsHostCheckbox');
+const popupSizeFixEnabledCheckbox = document.getElementById('popupSizeFixEnabledCheckbox');
+const popupSizeHeightInput = document.getElementById('popupSizeHeightInput');
+const popupSizeWidthInput = document.getElementById('popupSizeWidthInput');
 const userAgentDefaultRadio = document.getElementById('userAgentDefaultRadio');
 const userAgentFirefoxosRadio = document.getElementById('userAgentFirefoxosRadio');
 const userAgentAndroidRadio = document.getElementById('userAgentAndroidRadio');
@@ -67,6 +70,7 @@ async function main() {
 	addEventListeners();
 	checkPageAction();
 	checkPermissions();
+	checkPopupSize();
 	checkSearchEngine();
 	checkUserAgents();
 	refreshAdditionalSearchEngine();
@@ -82,6 +86,8 @@ function addEventListeners() {
 	document.options.additionalPermissions.addEventListener('click', requestPermission);
 	browser.permissions.onAdded.addListener(checkPermissions);
 	browser.permissions.onRemoved.addListener(checkPermissions);
+	popupSizeFixEnabledCheckbox.addEventListener('click', popupSizeFixEnabledCheckboxOnClick);
+	document.options.popupSize.forEach(element => element.addEventListener('change', popupSizeInputOnChange));
 	document.options.userAgent.forEach(element => element.addEventListener('click', userAgentOnClick));
 }
 
@@ -134,6 +140,14 @@ function addSearchEngineButtonOnClick() {
 	}
 }
 
+async function checkPopupSize() {
+	const item = await browser.storage.local.get([storageKeys.isPopupSizeFixEnabled, storageKeys.popupSize]);
+	const popupSize = item[storageKeys.popupSize] ?? {};
+	popupSizeFixEnabledCheckbox.checked = item[storageKeys.isPopupSizeFixEnabled] === true;
+	popupSizeHeightInput.value = popupSize.height ?? '600px';
+	popupSizeWidthInput.value = popupSize.width ?? '800px';
+}
+
 async function checkSearchEngine() {
 	const item = await browser.storage.local.get();
 	searchEngineAdditionalInputCheckbox.checked = item[storageKeys.isAdditionalEnabled] ?? true;
@@ -181,8 +195,10 @@ async function checkPageAction() {
 }
 
 async function checkPermissions() {
-	additionalPermissionsHostCheckbox.checked = await browser.permissions.contains(hostPermissions);
-	toggleUserAgentRadioDisabled(!additionalPermissionsHostCheckbox.checked);
+	const hasHostPermission = await browser.permissions.contains(hostPermissions);
+	additionalPermissionsHostCheckbox.checked = hasHostPermission;
+	togglePopupSizeInputDisabled(!hasHostPermission);
+	toggleUserAgentRadioDisabled(!hasHostPermission);
 }
 
 async function checkUserAgents() {
@@ -231,6 +247,12 @@ function initDocuments() {
 	document.getElementById('pageActionGoBackToHomeLabel').textContent = browser.i18n.getMessage('goBackToHome');
 	document.getElementById('additionalPermissionsLegend').textContent = browser.i18n.getMessage('additionalPermissions');
 	document.getElementById('hostLabel').textContent = browser.i18n.getMessage('host');
+	document.getElementById('popupSizeLegend').textContent = browser.i18n.getMessage('popupSize');
+	document.getElementById('popupSizeFixEnabledLabel').textContent = browser.i18n.getMessage('popupSizeDescription');
+	document.getElementById('popupSizeHeightLabel').textContent = browser.i18n.getMessage('height');
+	document.getElementById('popupSizeWidthLabel').textContent = browser.i18n.getMessage('width');
+	document.getElementById('popupSizeInformationDivision').textContent = browser.i18n.getMessage('thisFeatureRequiresHostPermission');
+	document.getElementById('popupSizeCautionDivision').textContent = browser.i18n.getMessage('optionsPopupSizeHTMLCaution');
 	document.getElementById('useragentLegend').textContent = browser.i18n.getMessage('useragent');
 	document.getElementById('defaultLabel').textContent = browser.i18n.getMessage('default');
 	document.getElementById('useragentInformationDivision').textContent = browser.i18n.getMessage('thisFeatureRequiresHostPermission');
@@ -258,6 +280,24 @@ function pageActionRadioButtonOnClick(event) {
 	}
 
 	checkPageAction();
+}
+
+function popupSizeFixEnabledCheckboxOnClick() {
+	saveConfig({ [storageKeys.isPopupSizeFixEnabled]: popupSizeFixEnabledCheckbox.checked });
+}
+
+function popupSizeInputOnChange() {
+	const height = popupSizeHeightInput.value.trim();
+	const width = popupSizeWidthInput.value.trim();
+	const isHeightValid = CSS.supports('min-height', height);
+	const isWidthValid = CSS.supports('min-width', width);
+	popupSizeHeightInput.style.backgroundColor = isHeightValid ? '' : 'red';
+	popupSizeWidthInput.style.backgroundColor = isWidthValid ? '' : 'red';
+	if (!isHeightValid || !isWidthValid) {
+		return;
+	}
+
+	saveConfig({ [storageKeys.popupSize]: { height, width } });
 }
 
 async function readValues() {
@@ -327,9 +367,11 @@ async function requestPermission(event) {
 			if (additionalPermissionsHostCheckbox.checked) {
 				const accepted = await browser.permissions.request(hostPermissions);
 				additionalPermissionsHostCheckbox.checked = accepted;
+				togglePopupSizeInputDisabled(!accepted);
 				toggleUserAgentRadioDisabled(!accepted);
 			} else {
 				browser.permissions.remove(hostPermissions);
+				togglePopupSizeInputDisabled(true);
 				toggleUserAgentRadioDisabled(true);
 			}
 			break;
@@ -433,6 +475,10 @@ function searchEngineWhichHasBeenAddedDeleteButtonOnClick(event) {
 		saveConfig({ [storageKeys.additionalSearchEngine]: additionalSearchEngineArray });
 		refreshAdditionalSearchEngine();
 	}
+}
+
+function togglePopupSizeInputDisabled(disabled) {
+	document.options.popupSize.forEach(element => element.disabled = disabled);
 }
 
 function toggleUserAgentRadioDisabled(disabled) {

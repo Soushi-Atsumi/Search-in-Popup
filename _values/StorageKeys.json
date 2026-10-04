@@ -9,11 +9,15 @@
 
 	"isGoogleEnabled": "IsGoogleEnabled",
 
+	"isPopupSizeFixEnabled": "IsPopupSizeFixEnabled",
+
 	"isYahooEnabled": "IsYahooEnabled",
 
 	"isYahooJapanEnabled": "IsYahooJapanEnabled",
 
 	"pageAction": "PageAction",
+
+	"popupSize": "PopupSize",
 
 	"searchEngine": "SearchEngine",
 

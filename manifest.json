@@ -23,6 +23,7 @@
 			"data_collection_permissions": {
 				"required": [ "none" ]
 			},
+			"id": "{a3cda24b-ec05-4451-9631-7dfdedc74b6e}",
 			"strict_min_version": "77.0"
 		}
 	},
@@ -70,5 +71,5 @@
 
 	"permissions": [ "activeTab", "contextMenus", "storage", "webRequest", "webRequestBlocking" ],
 
-	"version": "5.0"
+	"version": "5.1"
 }
